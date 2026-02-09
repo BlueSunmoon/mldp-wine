@@ -1,6 +1,6 @@
 import joblib
 import streamlit as st
-import numpy as np
+from sklearn.metrics import precision_score, classification_report
 import pandas as pd
 
 #Trained model
@@ -27,5 +27,19 @@ if st.sidebar.button("Predict"):
     else:
         st.warning(f"This White Wine is predicted to be 'Average' with probability {proba:.2f}")
 
+st.header("Evaluate Model on Dataset")
 
+if st.button("Run Evaluation on Dataset"):
+    data = pd.read_csv("winequality-white.csv")
+
+    X = data[feature_names]
+    y_true = (data['quality'] >= 7).astype(int)
+
+    y_pred = model.predict(X)
+
+    prec = precision_score(y_true, y_pred)
+    st.metric("Precision on dataset", f"{prec:.2f}")
+
+    st.text("Classification Report:")
+    st.text(classification_report(y_true, y_pred))
 
