@@ -35,6 +35,7 @@ st.header("Evaluate Model on Dataset")
 
 if st.button("Run Evaluation on Dataset"):
     data = pd.read_csv("winequality-white.csv")
+    st.write("Dataset columns:", data.columns.tolist())
 
     data['sugar_acid_ratio'] = data['residual sugar'] / (data['volatile acidity'] + 1e-6)
 
