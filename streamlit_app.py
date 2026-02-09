@@ -14,7 +14,11 @@ st.write("Predict whether a white wine is 'Good' (quality >= 7) or 'Average'")
 st.sidebar.header("Wine Features")
 input_data = {}
 for col in feature_names:
+    if col == "sugar_acid_ratio":
+        continue
     input_data[col] = st.sidebar.number_input(col, min_value = 0.0, value = 1.0)
+
+input_data['sugar_acid_ratio'] = input_data['residual sugar'] / (input_data['volatile acidity'] + 1e-6)
 
 input_df = pd.DataFrame([input_data])
 
@@ -31,6 +35,8 @@ st.header("Evaluate Model on Dataset")
 
 if st.button("Run Evaluation on Dataset"):
     data = pd.read_csv("winequality-white.csv")
+
+    data['sugar_acid_ratio'] = data['residual sugar'] / (data['volatile acidity'] + 1e-6)
 
     X = data[feature_names]
     y_true = (data['quality'] >= 7).astype(int)
