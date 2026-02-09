@@ -35,9 +35,10 @@ st.header("Evaluate Model on Dataset")
 
 if st.button("Run Evaluation on Dataset"):
     data = pd.read_csv("winequality-white.csv", sep=";")
-    st.write("Dataset columns:", data.columns.tolist())
 
     data['sugar_acid_ratio'] = data['residual sugar'] / (data['volatile acidity'] + 1e-6)
+    dup_count = data.duplicated().sum()
+    st.write(f"Number of duplicate rows: {dup_count}")
 
     X = data[feature_names]
     y_true = (data['quality'] >= 7).astype(int)
@@ -49,4 +50,11 @@ if st.button("Run Evaluation on Dataset"):
 
     st.text("Classification Report:")
     st.text(classification_report(y_true, y_pred))
+
+    data_no_dupes = data.drop_duplicates()
+    X_no_dupes = data_no_dupes[feature_names]
+    y_true_no_dupes = (data_no_dupes["quality"] >= 7).astype(int)
+    y_pred_no_dupes = model.predict(X_no_dupes)
+    prec_no_dupes = model.predict(y_true_no_dupes, y_pred_no_dupes)
+    st.metric("Precision without duplicates", f"{prec_no_dupes:.2f}")
 
