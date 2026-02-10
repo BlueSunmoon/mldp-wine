@@ -68,9 +68,10 @@ if uploaded_csv is not None:
         preds = (probas > threshold).astype(int)
 
         input_df["Predicted Quality"] = preds
-        input_df["Probability Good"] = probas
+        input_df["Probability Good"] = probas[:, 1]
+        input_df["Prob_Average"] = probas[:, 0]
 
-        st.write("Predicted Qualities:")
+        st.write("Predicted Probabilities & Qualities:")
         st.dataframe(input_df)
 
         csv_output = input_df.to_csv(index=False).encode("utf-8")
