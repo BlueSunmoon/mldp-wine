@@ -64,12 +64,15 @@ if uploaded_csv is not None:
         input_df = input_df[feature_names]
 
         probas = model.predict_proba(input_df)
+        
+        input_df["Probability Good"] = probas[:, 1]
+        input_df["Prob_Average"] = probas[:, 0]
+
         threshold = 0.5
         preds = (input_df["Prob_Good"] > threshold).astype(int)
 
         input_df["Predicted Quality"] = preds
-        input_df["Probability Good"] = probas[:, 1]
-        input_df["Prob_Average"] = probas[:, 0]
+        
 
         st.write("Predicted Probabilities & Qualities:")
         st.dataframe(input_df)
