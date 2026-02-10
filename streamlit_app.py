@@ -24,7 +24,7 @@ input_df = pd.DataFrame([input_data])
 
 if st.sidebar.button("Predict"):
     proba = model.predict_proba(input_df)[0,1]
-    prediction = (proba > 0.5).astype(int)
+    prediction = (proba > 0.3).astype(int)
     st.subheader("Result")
     if prediction == 1:
         st.success(f"This White Wine is predicted to be 'Good' with probability {proba:.2f}")
