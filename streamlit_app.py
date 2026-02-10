@@ -31,23 +31,37 @@ if st.sidebar.button("Predict"):
     else:
         st.warning(f"This White Wine is predicted to be 'Average' with probability {proba:.2f}")
 
-st.header("Evaluate Model on Dataset")
+st.write("Upload CSV file with white wine features to get predictions")
 
-if st.button("Run Evaluation on Dataset"):
-    data = pd.read_csv("winequality-white.csv", sep=";")
+uploaded_csv = st.file_uploader("Choose CSV file", type="csv")
+if uploaded_csv is not None:
+    input_df = pd.read_csv(uploaded_csv)
+    st.write("Preview of uploaded file")
+    st.dataframe(input_df.head())
 
-    data['sugar_acid_ratio'] = data['residual sugar'] / (data['volatile acidity'] + 1e-6)
-    dup_count = data.duplicated().sum()
-    st.write(f"Number of duplicate rows: {dup_count}")
+    if "sugar_acid_ratio" not in input_df.columns:
+        if "residual sugar" in input_df.columns and "volatile acidity" in input_df.columns:
+            input_df["sugar_acid_ratio"] = input_df["residual sugar"] / (input_df["volatile acidity"] + 1e-6)
+        else:
+            st.error("CSV must contain 'residual sugar' and 'volatile acidity' columns to compute sugar_acid_ratio.") 
 
-    unique_data = data.drop_duplicates()
-    X = unique_data[feature_names]
-    y_true = (unique_data['quality'] >= 7).astype(int)
-    y_pred = model.predict(X)
+    missing_columns = [col for col in feature_names if col not in input_df.columns]
+    if missing_columns:
+        st.error(f"Missing required columns: {missing_columns}")
+    else:
+        preds = model.predict(input_df)
+        input_df["Predicted Quality"] = preds
 
-    prec = precision_score(y_true, y_pred)
-    st.metric("Precision on dataset", f"{prec:.2f}")
+        st.write("Predicted Qualities:")
+        st.dataframe(input_df)
 
-    st.text("Classification Report:")
-    st.text(classification_report(y_true, y_pred))
+        csv_output = input_df.to_csv(index=False).encode("utf-8")
+        st.download_button(
+            label = "Download predictions as CSV",
+            data = csv_output,
+            file_name = "predicted_white_wine_quality.csv",
+            mime = "text/csv"
+        )
 
+
+    
