@@ -71,7 +71,9 @@ if uploaded_csv is not None:
         threshold = 0.3
         preds = (input_df["Probability Good"] > threshold).astype(int)
 
-        input_df["Predicted Quality"] = preds
+        input_df["Predicted Quality"] = preds    
+        input_df["Predicted Quality Label"] = input_df["Predicted Quality"].map({0: "Average", 1: "Good"})
+
         
 
         st.write("Predicted Probabilities & Qualities:")
