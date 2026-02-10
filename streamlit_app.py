@@ -63,7 +63,7 @@ if uploaded_csv is not None:
         # Reorder columns to match training columns
         input_df = input_df[feature_names]
 
-        probas = model.predict_proba(input_df)[:, 1]
+        probas = model.predict_proba(input_df)
         threshold = 0.5
         preds = (probas > threshold).astype(int)
 
