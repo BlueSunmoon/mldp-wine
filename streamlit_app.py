@@ -66,9 +66,9 @@ if uploaded_csv is not None:
         probas = model.predict_proba(input_df)
 
         input_df["Probability Good"] = probas[:, 1]
-        input_df["Prob_Average"] = probas[:, 0]
+        input_df["Probability Average"] = probas[:, 0]
 
-        threshold = 0.5
+        threshold = 0.3
         preds = (input_df["Probability Good"] > threshold).astype(int)
 
         input_df["Predicted Quality"] = preds
