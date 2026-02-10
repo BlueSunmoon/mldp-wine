@@ -35,7 +35,7 @@ st.write("Upload CSV file with white wine features to get predictions")
 
 uploaded_csv = st.file_uploader("Choose CSV file", type="csv")
 if uploaded_csv is not None:
-    input_df = pd.read_csv(uploaded_csv)
+    input_df = pd.read_csv(uploaded_csv, sep = ";")
     st.write("Preview of uploaded file")
     st.dataframe(input_df.head())
 
