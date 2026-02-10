@@ -63,8 +63,12 @@ if uploaded_csv is not None:
         # Reorder columns to match training columns
         input_df = input_df[feature_names]
 
-        preds = model.predict(input_df)
+        probas = model.predict_proba(input_df)[:, 1]
+        threshold = 0.5
+        preds = (probas > threshold).astype(int)
+
         input_df["Predicted Quality"] = preds
+        input_df["Probability Good"] = probas
 
         st.write("Predicted Qualities:")
         st.dataframe(input_df)
