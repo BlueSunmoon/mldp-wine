@@ -31,11 +31,22 @@ if st.sidebar.button("Predict"):
     else:
         st.warning(f"This White Wine is predicted to be 'Average' with probability {proba:.2f}")
 
+st.header("Batch Predict")
 st.write("Upload CSV file with white wine features to get predictions")
+
+template_data = {col: [0.0] for col in feature_names}
+template_df = pd.DataFrame(template_data)
+
+st.download_button(
+    label = "Download CSV Template",
+    data = template_df.to_csv(index=False).encode("utf-8"),
+    file_name = "white_wine_features_template.csv",
+    mime = "text/csv"
+)
 
 uploaded_csv = st.file_uploader("Choose CSV file", type="csv")
 if uploaded_csv is not None:
-    input_df = pd.read_csv(uploaded_csv, sep = ";")
+    input_df = pd.read_csv(uploaded_csv)
     st.write("Preview of uploaded file")
     st.dataframe(input_df.head())
 
@@ -49,6 +60,9 @@ if uploaded_csv is not None:
     if missing_columns:
         st.error(f"Missing required columns: {missing_columns}")
     else:
+        # Reorder columns to match training columns
+        input_df = input_df[feature_names]
+
         preds = model.predict(input_df)
         input_df["Predicted Quality"] = preds
 
